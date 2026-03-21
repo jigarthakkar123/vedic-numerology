@@ -1,0 +1,94 @@
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: white;
+    padding: 20px;
+}
+
+/* FORM */
+form {
+    background: #1e1e2f;
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+input {
+    padding: 10px;
+    margin: 5px;
+    border-radius: 6px;
+    border: none;
+    width: 120px;
+}
+
+/* ALIGN INPUTS */
+form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+
+/* BUTTON */
+button {
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: none;
+    background: #4c8cff;
+    color: white;
+    cursor: pointer;
+}
+
+/* TOP BAR */
+.top-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.box {
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+.root { background:#00e5ff; color:black; }
+.destiny { background:#ffd54f; color:black; }
+
+.md { background:#ff4c4c; }
+.ad { background:#4c8cff; }
+.pd { background:#37c871; }
+
+/* GRID */
+.grid {
+    margin-top: 20px;
+}
+
+.row {
+    display: flex;
+    justify-content: center;
+}
+
+.cell {
+    width: 80px;
+    height: 80px;
+    border: 2px solid white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+}
+
+/* BUTTON AREA */
+.buttons {
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* POPUP */
+.popup {
+    margin-top: 20px;
+    background: #1e1e2f;
+    padding: 15px;
+    border-radius: 10px;
+}
