@@ -90,28 +90,18 @@ def antardasha(year,root,month,weekday):
 
 
 # Correct Pratyantar logic
-def pratyantar_number(start_date, antardasha, target_date):
+def pratyantar_number(start_date, ad, target_date):
 
-    number = antardasha
-    current = start_date
+    # 🔹 Difference in days
+    diff = (target_date - start_date).days
 
-    # Maximum cycle duration ~360 days
-    for _ in range(60):
+    # 🔹 Convert into cycle (1–9)
+    pd = (ad + diff) % 9
 
-        duration = number * 8
-        end = current + timedelta(days=duration)
+    if pd == 0:
+        pd = 9
 
-        if current <= target_date < end:
-            return number
-
-        current = end
-        number += 1
-
-        if number > 9:
-            number = 1
-
-    # fallback (should never happen)
-    return antardasha
+    return pd
 
 def pratyantar_calendar(start_date, antardasha):
 

@@ -13,7 +13,8 @@ def index():
 
     # ✅ DEFAULT DATA (VERY IMPORTANT FOR RENDER + FIRST LOAD)
     data = {
-        "grid": [["", "", ""], ["", "", ""], ["", "", ""]],
+        "basic_grid": [["","",""],["","",""],["","",""]],
+        "dasha_grid": [["","",""],["","",""],["","",""]],
         "root": 0,
         "destiny": 0,
         "md": 0,
@@ -59,7 +60,11 @@ def index():
         digits.append(root)
         digits.append(destiny)
 
-        counts = count_numbers(digits)
+        # ✅ BASIC COUNTS (ONLY DOB + ROOT + DESTINY)
+        base_counts = count_numbers(digits.copy())
+
+        # ✅ DASHA COUNTS (START FROM BASE)
+        dasha_counts = base_counts.copy()
 
         md = mahadasha(root, birth_year, year)
 
@@ -67,33 +72,42 @@ def index():
         ad = antardasha(year, root, birth_month, weekday)
 
         # ✅ DATE FIX (NO ERROR)
-        start_date = datetime(year, birth_month, birth_day)
+        # Safe day handling
+        safe_day = min(birth_day, 28)
+
+        start_date = datetime(year, birth_month, safe_day)
         target_date = datetime(year, month, 15)
 
+        
         pd = pratyantar_number(start_date, ad, target_date)
-
+        print("DEBUG → Month:", month, "PD:", pd)
         # APPLY DASHAS
-        counts = apply_dasha(counts, md)
-        counts = apply_dasha(counts, ad)
-        counts = apply_dasha(counts, pd)
+        dasha_counts = apply_dasha(dasha_counts, md)
+        dasha_counts = apply_dasha(dasha_counts, ad)
+        dasha_counts = apply_dasha(dasha_counts, pd)
 
-        grid = build_grid(counts)
+        basic_grid = build_grid(base_counts)
+        dasha_grid = build_grid(dasha_counts)
 
-        power = calculate_number_power(counts, root, destiny)
+        power = calculate_number_power(dasha_counts, root, destiny)
 
         combined_text = combined_dasha_interpretation(md, ad, pd)
 
         # ✅ FINAL DATA (OVERWRITE DEFAULT)
         data = {
-            "grid": grid,
+            "basic_grid": basic_grid,   # ✅ GRID 1
+            "dasha_grid": dasha_grid,   # ✅ GRID 2
+
             "root": root,
             "destiny": destiny,
             "md": md,
             "ad": ad,
             "pd": pd,
+
             "power": power,
-            "counts": counts,
+            "counts": dasha_counts,
             "combined": combined_text,
+
             "dob": dob,
             "year_input": year,
             "month_input": month
