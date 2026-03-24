@@ -5,209 +5,266 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-
-<h2>Vedic Numerology</h2>
-
-<form method="POST">
-
-    <input type="date" name="dob" id="dob" value="{{ data.dob if data.dob else '' }}">
-    <input type="number" name="year" id="year" value="{{ data.year_input if data.year_input else '' }}">
-    <input type="number" name="month" id="month" value="{{ data.month_input if data.month_input else '' }}">
-
-    <button type="submit">Calculate</button>
-
-</form>
-
-{% if data %}
-
-<hr>
-
-<div class="top-bar">
-
-    <div class="box root">Root: {{data.root}}</div>
-    <div class="box destiny">Destiny: {{data.destiny}}</div>
-
-    <div class="box md">MD: {{data.md}}</div>
-    <div class="box ad">AD: {{data.ad}}</div>
-    <div class="box pd">PD: {{data.pd}}</div>
-
-</div>
-
-<h4>Mahadasha: {{data.md}} | Antardasha: {{data.ad}} | Pratyantar: {{data.pd}}</h4>
-
-<div class="grid">
-
-    {% for row in data.grid %}
-    <div class="row">
-        {% for col in row %}
-        <div class="cell" data-value="{{col}}">{{col}}</div>
-        {% endfor %}
+    
+    <h2>Vedic Numerology</h2>
+    
+    <form method="POST">
+        
+        <input type="date" name="dob" id="dob" value="{{ data.dob if data.dob else '' }}">
+        <input type="number" name="year" id="year" value="{{ data.year_input if data.year_input else '' }}">
+        <input type="number" name="month" id="month" value="{{ data.month_input if data.month_input else '' }}">
+        
+        <button type="submit">Calculate</button>
+        
+    </form>
+    
+    {% if data %}
+    
+    <hr>
+    
+    <div class="top-bar">
+        
+        <div class="box root">Root: {{data.root}}</div>
+        <div class="box destiny">Destiny: {{data.destiny}}</div>
+        
+        <div class="box md">MD: {{data.md}}</div>
+        <div class="box ad">AD: {{data.ad}}</div>
+        <div class="box pd">PD: {{data.pd}}</div>
+        
     </div>
+    
+    <h4>Mahadasha: {{data.md}} | Antardasha: {{data.ad}} | Pratyantar: {{data.pd}}</h4>
+    
+    <div class="grid-container">
+        
+        <!-- BASIC GRID -->
+        <div>
+            <h3>Basic Grid</h3>
+            <div class="grid">
+                {% for row in data.basic_grid %}
+                <div class="row">
+                    {% for col in row %}
+                    <div class="cell">{{col}}</div>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- DASHA GRID -->
+        <div>
+            <h3>Dasha Grid</h3>
+            <div class="grid dasha-grid">
+                {% for row in data.dasha_grid %}
+                <div class="row">
+                    {% for col in row %}
+                    <div class="cell" data-value="{{col}}">{{col}}</div>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+    </div>
+    
+    <div class="buttons">
+        
+        <button onclick="showPower()">Power Analysis</button>
+        <button onclick="showChar()">Characteristics</button>
+        <button onclick="showInterpretation()">Interpretation</button>
+        
+    </div>
+    
+    <div id="popup" class="popup"></div>
+    
+    <h3>Power Analysis</h3>
+    
+    {% for num in range(1,10) %}
+    <p>Number {{num}} → {{data.power[num]}}%</p>
     {% endfor %}
-
-</div>
-
-<div class="buttons">
-
-    <button onclick="showPower()">Power Analysis</button>
-    <button onclick="showChar()">Characteristics</button>
-    <button onclick="showInterpretation()">Interpretation</button>
-
-</div>
-
-<div id="popup" class="popup"></div>
-
-<h3>Power Analysis</h3>
-
-{% for num in range(1,10) %}
-<p>Number {{num}} → {{data.power[num]}}%</p>
-{% endfor %}
-
-{% endif %}
-
+    
+    {% endif %}
+</body>
 <script>
-
-
-const powerData = {{ data.power | tojson | safe }};
-const counts = {{ data.counts | tojson | safe }};
-const destiny = {{ data.destiny | tojson | safe }};
-
-const md = {{ data.md | tojson | safe }};
-const ad = {{ data.ad | tojson | safe }};
-const pd = {{ data.pd | tojson | safe }};
-
-const combinedText = {{ data.combined | tojson | safe }};
-
-const CHARACTERISTICS = {
-    1: {pos:"Leadership, confidence", neg:"Ego, dominance"},
-    2: {pos:"Sensitivity, cooperation", neg:"Over-emotional"},
-    3: {pos:"Creativity, communication", neg:"Scattered mind"},
-    4: {pos:"Discipline, structure", neg:"Stubbornness"},
-    5: {pos:"Communication, adaptability", neg:"Restlessness"},
-    6: {pos:"Responsibility, care", neg:"Emotional burden"},
-    7: {pos:"Spirituality, intuition", neg:"Isolation"},
-    8: {pos:"Power, finance", neg:"Struggle, delays"},
-    9: {pos:"Energy, courage", neg:"Aggression"}
-};
-
-function numberNature(num, count){
-
-    if(num === destiny) return "Positive";
-
-    if([1,2,3,5,7,9].includes(num)){
-        if(count === 1) return "Positive";
-        if(count > 1) return "Negative";
+    
+    
+    const basicGrid = {{ data.basic_grid | tojson | safe }};
+    const md = {{ data.md | tojson | safe }};
+    const ad = {{ data.ad | tojson | safe }};
+    const pd = {{ data.pd | tojson | safe }};
+    const powerData = {{ data.power | tojson | safe }};
+    const counts = {{ data.counts | tojson | safe }};
+    const combinedText = {{ data.combined | tojson | safe }};
+    const destiny = {{ data.destiny | tojson | safe }};
+    
+    
+    const CHARACTERISTICS = {
+        1: {pos:"Leadership, confidence", neg:"Ego, dominance"},
+        2: {pos:"Sensitivity, cooperation", neg:"Over-emotional"},
+        3: {pos:"Creativity, communication", neg:"Scattered mind"},
+        4: {pos:"Discipline, structure", neg:"Stubbornness"},
+        5: {pos:"Communication, adaptability", neg:"Restlessness"},
+        6: {pos:"Responsibility, care", neg:"Emotional burden"},
+        7: {pos:"Spirituality, intuition", neg:"Isolation"},
+        8: {pos:"Power, finance", neg:"Struggle, delays"},
+        9: {pos:"Energy, courage", neg:"Aggression"}
+    };
+    
+    function numberNature(num, count){
+        
+        if(num === destiny) return "Positive";
+        
+        if([1,2,3,5,7,9].includes(num)){
+            if(count === 1) return "Positive";
+            if(count > 1) return "Negative";
+        }
+        
+        if([4,8].includes(num)){
+            return (count % 2 === 0) ? "Positive" : "Negative";
+        }
+        
+        if(num === 6){
+            return (count === 1) ? "Positive" : "Negative";
+        }
+        
+        return "Neutral";
     }
-
-    if([4,8].includes(num)){
-        return (count % 2 === 0) ? "Positive" : "Negative";
+    
+    
+    function showPower(){
+        
+        console.log("Power clicked");  // ✅ DEBUG
+        
+        let html = "<h3>Power Analysis</h3>";
+        
+        for(let num = 1; num <= 9; num++){
+            html += "Number " + num + " → " + (powerData[num] || 0) + "%<br>";
+        }
+        
+        document.getElementById("popup").innerHTML = html;
     }
-
-    if(num === 6){
-        return (count === 1) ? "Positive" : "Negative";
+    
+    function showInterpretation(){
+        
+        if(!combinedText){
+            document.getElementById("popup").innerHTML = "⚠ Please click Calculate first";
+            return;
+        }
+        
+        let html = "<h3>🧠 Combined Interpretation</h3><br>";
+        html += combinedText;
+        
+        document.getElementById("popup").innerHTML = html;
     }
-
-    return "Neutral";
-}
-
-
-function showPower(){
-
-    console.log("Power clicked");  // ✅ DEBUG
-
-    let html = "<h3>Power Analysis</h3>";
-
-    for(let num = 1; num <= 9; num++){
-        html += "Number " + num + " → " + (powerData[num] || 0) + "%<br>";
-    }
-
-    document.getElementById("popup").innerHTML = html;
-}
-
-function showInterpretation(){
-
-    if(!combinedText){
-        document.getElementById("popup").innerHTML = "⚠ Please click Calculate first";
-        return;
-    }
-
-    let html = "<h3>🧠 Combined Interpretation</h3><br>";
-    html += combinedText;
-
-    document.getElementById("popup").innerHTML = html;
-}
-
-function showChar(){
-
-    if(Object.keys(counts).length === 0){
-        document.getElementById("popup").innerHTML = "⚠ Please click Calculate first";
-        return;
-    }
-
-    let html = "<h3>Characteristics</h3>";
-
-    for(let num = 1; num <= 9; num++){
-
-        if(counts[num] > 0){
-
-            let nature = numberNature(num, counts[num]);
-
-            html += "<b>Number " + num + " (" + (powerData[num] || 0) + "%)</b><br>";
-
-            if(nature === "Positive"){
-                html += "<span style='color:#37c871;'>Positive → " + CHARACTERISTICS[num].pos + "</span><br><br>";
-            }
-            else{
-                html += "<span style='color:#ff4c4c;'>Negative → " + CHARACTERISTICS[num].neg + "</span><br><br>";
+    
+    function showChar(){
+        
+        if(Object.keys(counts).length === 0){
+            document.getElementById("popup").innerHTML = "⚠ Please click Calculate first";
+            return;
+        }
+        
+        let html = "<h3>Characteristics</h3>";
+        
+        for(let num = 1; num <= 9; num++){
+            
+            if(counts[num] > 0){
+                
+                let nature = numberNature(num, counts[num]);
+                
+                html += "<b>Number " + num + " (" + (powerData[num] || 0) + "%)</b><br>";
+                
+                if(nature === "Positive"){
+                    html += "<span style='color:#37c871;'>Positive → " + CHARACTERISTICS[num].pos + "</span><br><br>";
+                }
+                else{
+                    html += "<span style='color:#ff4c4c;'>Negative → " + CHARACTERISTICS[num].neg + "</span><br><br>";
+                }
             }
         }
+        
+        document.getElementById("popup").innerHTML = html;
     }
+    
+    function applyGridColors(){
 
-    document.getElementById("popup").innerHTML = html;
-}
-function applyGridColors(){
+    const cells = document.querySelectorAll(".dasha-grid .cell");
 
-    const cells = document.querySelectorAll(".cell");
+    // ✅ Count base numbers
+    let baseCount = {};
+
+    basicGrid.flat().forEach(val => {
+        if(val && val !== "-"){
+            for(let c of val){
+                baseCount[c] = (baseCount[c] || 0) + 1;
+            }
+        }
+    });
 
     cells.forEach(cell => {
 
         let value = cell.getAttribute("data-value");
+        if(!value || value === "-") return;
 
-        if(!value) return;
+        let tempBase = {...baseCount};   // ✅ IMPORTANT (inside cell)
 
-        // check if number exists in cell
-        if(value.includes(md)){
-            cell.style.background = "#ff4c4c";  // red
-        }
-        else if(value.includes(ad)){
-            cell.style.background = "#4c8cff";  // blue
-        }
-        else if(value.includes(pd)){
-            cell.style.background = "#37c871";  // green
-        }
-        else{
-            cell.style.background = "#2c2c2c";  // default
+        let newHTML = "";
+
+        for(let char of value){
+
+            let styles = [];
+
+            // ✅ If base number → skip coloring
+            if(tempBase[char]){
+                tempBase[char]--;
+            }
+            else{
+
+                // 🔴 MD
+                if(char == md){
+                    styles.push("color:#ff4c4c");
+                    styles.push("font-weight:bold");
+                }
+
+                // 🔵 AD
+                else if(char == ad){
+                    styles.push("color:#4c8cff");
+                    styles.push("font-weight:bold");
+                }
+
+                // 🟢 PD
+                else if(char == pd){
+                    styles.push("color:#37c871");
+                    styles.push("font-weight:bold");
+                }
+            }
+
+            newHTML += `<span style="${styles.join(";")}">${char}</span>`;
         }
 
+        cell.innerHTML = newHTML;
     });
 }
-window.onload = function(){
-
-    // ✅ Set current date
-    let now = new Date();
-
-    if(!document.getElementById("year").value){
-        document.getElementById("year").value = now.getFullYear();
-    }
-
-    if(!document.getElementById("month").value){
-        document.getElementById("month").value = now.getMonth() + 1;
-    }
-
-    // ✅ Apply grid colors
-    applyGridColors();
-};
-
+    
+    document.addEventListener("DOMContentLoaded", function(){
+        
+        applyGridColors();
+        
+        let now = new Date();
+        
+        if(!document.getElementById("year").value){
+            document.getElementById("year").value = now.getFullYear();
+        }
+        
+        if(!document.getElementById("month").value){
+            document.getElementById("month").value = now.getMonth() + 1;
+        }
+        
+        window.showPower = showPower;
+        window.showChar = showChar;
+        window.showInterpretation = showInterpretation;
+        
+    });
 </script>
-</body>
+
 </html>
